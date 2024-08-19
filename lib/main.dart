@@ -10,6 +10,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LandingPage();
+    return const LandingPage();
   }
 }
