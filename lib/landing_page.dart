@@ -14,9 +14,19 @@ class _LandingPageState extends State<LandingPage>
   late AnimationController _imageController;
   late Animation<Offset> _imageSlideAnimation;
   late Animation<double> _imageOpacityAnimation;
+  late AnimationController _featuresController;
+  late Animation<double> _featuresOpacityAnimation;
   final List<List<String>> _headerWords = [
     ["Organize", "Smarter,", "Live", "Easier:"],
     ["Your", "Personal,", "Task", "Manager,", "Always", "at", "Hand!"]
+  ];
+  final List<String> _features = [
+    "Create tasks effortlessly",
+    "Set task notifications",
+    "Complete tasks with satisfaction",
+    "Monthly task overview",
+    "Daily progress dashboard",
+    "Weekly task distribution insights"
   ];
 
   @override
@@ -54,6 +64,18 @@ class _LandingPageState extends State<LandingPage>
       curve: Curves.easeIn,
     ));
 
+    _featuresController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    _featuresOpacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _featuresController,
+      curve: Curves.easeIn,
+    ));
+
     _animateWords();
   }
 
@@ -64,6 +86,8 @@ class _LandingPageState extends State<LandingPage>
     }
     await Future.delayed(const Duration(milliseconds: 500));
     _imageController.forward();
+    await Future.delayed(const Duration(milliseconds: 500));
+    _featuresController.forward();
   }
 
   @override
@@ -72,6 +96,7 @@ class _LandingPageState extends State<LandingPage>
       controller.dispose();
     }
     _imageController.dispose();
+    _featuresController.dispose();
     super.dispose();
   }
 
@@ -79,74 +104,24 @@ class _LandingPageState extends State<LandingPage>
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[
-            Color(0xff414141),
-            Color(0xff383838),
-            Color(0xff303030),
-            Color(0xff272727),
-            Color(0xff1f1f1f),
-            Color(0xff171717),
-            Color(0xff0e0e0e),
-            Color(0xff000000),
+        gradient: RadialGradient(
+          center: Alignment(-1, -1),
+          radius: 1.5,
+          colors: [
+            Color(0xFF3A3A3A),
+            Color(0xFF2A2A2A),
+            Color(0xFF1A1A1A),
+            Color(0xFF000000),
           ],
-          tileMode: TileMode.repeated,
+          stops: [0.0, 0.2, 0.4, 1],
         ),
       ),
       child: MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.transparent,
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 80),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _headerWords.asMap().entries.map((lineEntry) {
-                    return Wrap(
-                      spacing: 4,
-                      runSpacing: 8,
-                      children:
-                          lineEntry.value.asMap().entries.map((wordEntry) {
-                        int index = lineEntry.key == 0
-                            ? wordEntry.key
-                            : _headerWords[0].length + wordEntry.key;
-                        return FadeTransition(
-                          opacity: _animations[index],
-                          child: Text(
-                            wordEntry.value,
-                            style: const TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  }).toList(),
-                ),
-                const Spacer(),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: FadeTransition(
-                    opacity: _imageOpacityAnimation,
-                    child: SlideTransition(
-                      position: _imageSlideAnimation,
-                      child: const Image(
-                        image: AssetImage('assets/calendar_view.png'),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 40),
-              ],
-            ),
-          ),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Container()),
         ),
       ),
     );
